@@ -1,10 +1,10 @@
-# GDPR Sidecar
+# Rightful Sidecar
 
-A lightweight sidecar that deploys alongside your microservices to integrate them into GDPR processes. It communicates with the central GDPR Service via NATS and with your microservice via a simple REST contract.
+A lightweight sidecar that deploys alongside your microservices to integrate them into GDPR processes. It communicates with the central Rightful Service via NATS and with your microservice via a simple REST contract.
 
 ## How It Works
 
-The sidecar acts as a bridge between your microservice and the GDPR Service. On startup, it validates your microservice's GDPR endpoints, registers it in the central data catalog, and then listens for incoming GDPR requests (deletion, export). When a request arrives, the sidecar calls your microservice's REST endpoints and reports the result back.
+The sidecar acts as a bridge between your microservice and the Rightful Service. On startup, it validates your microservice's GDPR endpoints, registers it in the central data catalog, and then listens for incoming GDPR requests (deletion, export). When a request arrives, the sidecar calls your microservice's REST endpoints and reports the result back.
 
 Your microservice just needs to implement 5 REST endpoints — the sidecar handles all messaging infrastructure, contract validation, and process coordination.
 
@@ -31,7 +31,7 @@ All configuration is via environment variables.
 | `MICROSERVICE_URL` | No | `http://localhost:3000` | Microservice base URL |
 | `MICROSERVICE_TIMEOUT` | No | `5000` | Timeout for microservice REST calls (ms) |
 | `HEALTH_CHECK_INTERVAL` | No | `30000` | Health check interval (ms) |
-| `HEARTBEAT_INTERVAL` | No | `10000` | Heartbeat interval to GDPR Service (ms) |
+| `HEARTBEAT_INTERVAL` | No | `10000` | Heartbeat interval to Rightful Service (ms) |
 
 ## Deployment
 
@@ -45,8 +45,8 @@ services:
     ports:
       - "3000:3000"
 
-  gdpr-sidecar:
-    image: gdpr-sidecar:latest
+  rightful-sidecar:
+    image: rightful-sidecar:latest
     environment:
       NATS_URL: nats://nats:4222
       SERVICE_NAME: my-service
@@ -60,7 +60,7 @@ services:
 1. Calls `GET /gdpr/health` to verify the microservice is reachable
 2. Calls `GET /gdpr/register` to retrieve entity definitions and supported actions
 3. Validates the response against the contract schema
-4. Registers with the GDPR Service via NATS
+4. Registers with the Rightful Service via NATS
 
 If validation fails, the sidecar refuses to register. Your microservice never enters the data catalog in a broken state.
 

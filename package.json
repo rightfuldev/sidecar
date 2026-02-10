@@ -1,7 +1,7 @@
 {
-  "name": "gdpr-sidecar",
+  "name": "rightful-sidecar",
   "version": "0.0.1",
-  "description": "GDPR Sidecar for distributed systems. Deploys alongside microservices to integrate them into GDPR processes. Communicates with the central GDPR Service via NATS and with the host microservice via a REST contract. Supports data deletion and export operations.",
+  "description": "Rightful Sidecar for distributed systems. Deploys alongside microservices to integrate them into GDPR processes. Communicates with the central Rightful Service via NATS and with the host microservice via a REST contract. Supports data deletion and export operations.",
   "author": "Yanik Peiffer",
   "private": false,
   "license": "ICS",
@@ -26,6 +26,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "^11.1.13",
     "@nestjs/platform-express": "^11.0.1",
+    "@rightful/contracts": "^0.1.1",
     "joi": "^18.0.2",
     "nats": "^2.29.3",
     "reflect-metadata": "^0.2.2",
