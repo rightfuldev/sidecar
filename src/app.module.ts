@@ -3,9 +3,16 @@ import { ConfigModule } from './config/config.module';
 import { NatsModule } from './nats/nats.module';
 import { ApiHandlerModule } from './api-handler/api-handler.module';
 import { GdprModule } from './gdpr/gdpr.module';
+import { ProcessorModule } from './processor/processor.module';
 
 @Module({
-  imports: [ConfigModule, NatsModule, ApiHandlerModule, GdprModule],
+  imports: [
+    ConfigModule,
+    NatsModule,
+    ApiHandlerModule,
+    GdprModule,
+    ProcessorModule,
+  ],
   controllers: [],
   providers: [],
 })
