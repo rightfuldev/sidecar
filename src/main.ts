@@ -1,24 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { AsyncMicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const appContext = await NestFactory.createApplicationContext(AppModule);
-  const configService = appContext.get(ConfigService);
-  const natsUrl = configService.getOrThrow<string>('nats.url');
-  const serviceName = configService.getOrThrow<string>('service.name');
-  await appContext.close();
-
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+  const app = await NestFactory.createMicroservice<AsyncMicroserviceOptions>(
     AppModule,
     {
-      transport: Transport.NATS,
-      options: {
-        servers: [natsUrl],
-        gracefulShutdown: true,
-        queue: serviceName,
-      },
+      useFactory: (configService: ConfigService) => ({
+        transport: Transport.NATS,
+        options: {
+          servers: [configService.getOrThrow<string>('nats.url')],
+          gracefulShutdown: true,
+          queue: configService.getOrThrow<string>('service.name'),
+        },
+      }),
+      inject: [ConfigService],
     },
   );
   await app.listen();

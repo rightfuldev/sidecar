@@ -11,12 +11,6 @@ export class DeleteHandler implements GdprActionHandler {
 
   async execute(request: ActionRequestMessage): Promise<ActionResult> {
     this.logger.log(`Initiate delete handler for userId=${request.userId}`);
-
-    const deleteRes = await this.apiHandler.deleteData(request.userId);
-
-    return {
-      deleted: deleteRes.deleted,
-      retained: deleteRes.retained,
-    };
+    return this.apiHandler.deleteData(request.userId);
   }
 }

@@ -4,9 +4,6 @@ import {
   ActionRequestMessageSchema,
   NatsSubjects,
   type ActionRequestMessage,
-  type ActionReceiptMessage,
-  type ActionCompletionMessage,
-  type ActionErrorMessage,
   ActionResult,
 } from '@rightful/contracts';
 import { GdprActionRegistry } from '../gdpr/gdpr.registry';
@@ -79,15 +76,18 @@ export class ProcessorController {
     }
   }
 
-  private async publishReceipt(data: ActionRequestMessage): Promise<void> {
-    const message: ActionReceiptMessage = {
+  private baseMessage(data: ActionRequestMessage) {
+    return {
       processId: data.processId,
       serviceName: this.serviceName,
       action: data.action,
     };
+  }
+
+  private async publishReceipt(data: ActionRequestMessage): Promise<void> {
     await this.natsPublisher.publish(
       NatsSubjects.processAck(data.processId),
-      message,
+      this.baseMessage(data),
     );
   }
 
@@ -95,31 +95,19 @@ export class ProcessorController {
     data: ActionRequestMessage,
     result: ActionResult,
   ): Promise<void> {
-    const message: ActionCompletionMessage = {
-      processId: data.processId,
-      serviceName: this.serviceName,
-      action: data.action,
+    await this.natsPublisher.publish(NatsSubjects.processAck(data.processId), {
+      ...this.baseMessage(data),
       result,
-    };
-    await this.natsPublisher.publish(
-      NatsSubjects.processAck(data.processId),
-      message,
-    );
+    });
   }
 
   private async publishError(
     data: ActionRequestMessage,
     error: string,
   ): Promise<void> {
-    const message: ActionErrorMessage = {
-      processId: data.processId,
-      serviceName: this.serviceName,
-      action: data.action,
-      error,
-    };
     await this.natsPublisher.publish(
       NatsSubjects.processError(data.processId),
-      message,
+      { ...this.baseMessage(data), error },
     );
   }
 }

@@ -13,7 +13,5 @@ import { ProcessorModule } from './processor/processor.module';
     GdprModule,
     ProcessorModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
